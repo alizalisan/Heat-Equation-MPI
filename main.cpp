@@ -231,12 +231,14 @@ int main(int argc, char *argv[]) {
 					for(int i=0; i<chunkCol; i++){
 						tempRow[i] = *((myChunk+0*chunkCol)+i);
 					}
+					//non-blocking send
 					if(numProcs==2 || numProcs==4){
 						MPI_Request req;
 						MPI_Isend(&tempRow, chunkCol, MPI_FLOAT, above, BEGIN, MPI_COMM_WORLD, &req);
 						MPI_Irecv(&aboveRow, chunkCol, MPI_FLOAT, above, BEGIN, MPI_COMM_WORLD, &req);
 						MPI_Wait(&req, &status);
 					}
+					//blocking send
 					else{
 						MPI_Send(&tempRow, chunkCol, MPI_FLOAT, above, BEGIN, MPI_COMM_WORLD);
 						MPI_Recv(&aboveRow, chunkCol, MPI_FLOAT, above, BEGIN, MPI_COMM_WORLD, &status);
